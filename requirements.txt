@@ -1,0 +1,4 @@
+rdflib
+networkx
+vedo
+numpy

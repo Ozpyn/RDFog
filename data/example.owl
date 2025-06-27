@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:ex="http://example.org/ontology#"
+    xml:base="http://example.org/ontology">
+
+  <!-- Ontology -->
+  <owl:Ontology rdf:about="http://example.org/ontology"/>
+
+  <!-- Classes -->
+  <owl:Class rdf:about="http://example.org/ontology#Device"/>
+  <owl:Class rdf:about="http://example.org/ontology#Sensor">
+    <rdfs:subClassOf rdf:resource="http://example.org/ontology#Device"/>
+  </owl:Class>
+  <owl:Class rdf:about="http://example.org/ontology#Server">
+    <rdfs:subClassOf rdf:resource="http://example.org/ontology#Device"/>
+  </owl:Class>
+  <owl:Class rdf:about="http://example.org/ontology#Location"/>
+
+  <!-- Object Properties -->
+  <owl:ObjectProperty rdf:about="http://example.org/ontology#locatedIn"/>
+  <owl:ObjectProperty rdf:about="http://example.org/ontology#connectedTo"/>
+  <owl:ObjectProperty rdf:about="http://example.org/ontology#monitors"/>
+
+  <!-- Individuals -->
+  <owl:NamedIndividual rdf:about="http://example.org/ontology#SensorA">
+    <rdf:type rdf:resource="http://example.org/ontology#Sensor"/>
+    <ex:locatedIn rdf:resource="http://example.org/ontology#Room1"/>
+    <ex:monitors rdf:resource="http://example.org/ontology#ServerX"/>
+  </owl:NamedIndividual>
+
+  <owl:NamedIndividual rdf:about="http://example.org/ontology#SensorB">
+    <rdf:type rdf:resource="http://example.org/ontology#Sensor"/>
+    <ex:locatedIn rdf:resource="http://example.org/ontology#Room2"/>
+    <ex:monitors rdf:resource="http://example.org/ontology#ServerY"/>
+  </owl:NamedIndividual>
+
+  <owl:NamedIndividual rdf:about="http://example.org/ontology#ServerX">
+    <rdf:type rdf:resource="http://example.org/ontology#Server"/>
+    <ex:connectedTo rdf:resource="http://example.org/ontology#ServerY"/>
+  </owl:NamedIndividual>
+
+  <owl:NamedIndividual rdf:about="http://example.org/ontology#ServerY">
+    <rdf:type rdf:resource="http://example.org/ontology#Server"/>
+    <ex:connectedTo rdf:resource="http://example.org/ontology#ServerZ"/>
+  </owl:NamedIndividual>
+
+  <owl:NamedIndividual rdf:about="http://example.org/ontology#ServerZ">
+    <rdf:type rdf:resource="http://example.org/ontology#Server"/>
+  </owl:NamedIndividual>
+
+  <owl:NamedIndividual rdf:about="http://example.org/ontology#Room1">
+    <rdf:type rdf:resource="http://example.org/ontology#Location"/>
+  </owl:NamedIndividual>
+
+  <owl:NamedIndividual rdf:about="http://example.org/ontology#Room2">
+    <rdf:type rdf:resource="http://example.org/ontology#Location"/>
+  </owl:NamedIndividual>
+
+</rdf:RDF>
