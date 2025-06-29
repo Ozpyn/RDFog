@@ -1,7 +1,7 @@
 from vedo import Plotter, Points, Lines
 
 def visualize_graph(nodes, edges, coords):
-    plotter = Plotter(bg='black')
+    plotter = Plotter(bg='grey')
 
     points = Points([coords[n] for n in nodes], r=10, c='cyan')
     plotter += points
