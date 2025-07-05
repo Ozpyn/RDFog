@@ -1,16 +1,18 @@
-from vedo import Plotter, Points, Lines
+import vedo
 
-def visualize_graph(nodes, edges, coords):
-    plotter = Plotter(bg='grey')
+def visualize_graph(nodes_dict, edges, coords):
+    plotter = vedo.Plotter(bg='grey')
 
-    points = Points([coords[n] for n in nodes], r=10, c='cyan')
-    plotter += points
+    print(nodes_dict)
 
-    line_segments = []
-    for src, dst, _ in edges:
-        if src in coords and dst in coords:
-            line_segments.append([coords[src], coords[dst]])
-    lines = Lines(line_segments, c='white', alpha=0.6)
-    plotter += lines
+    for color in nodes_dict:
+        points = [coords[n] for n in nodes_dict[color]]
+        plotter += vedo.Points(points, r=10, c=color)
+    
+    lines = [
+        [coords[src], coords[dst]]
+        for src, dst, _ in edges if src in coords and dst in coords
+    ]        
+    plotter += vedo.Lines(lines, c='white', alpha=0.6)
 
     plotter.show(interactive=True)
