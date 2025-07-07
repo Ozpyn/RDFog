@@ -1,0 +1,21 @@
+version: '3'
+services:
+  fuseki1:
+    image: stain/jena-fuseki
+    container_name: fuseki1
+    ports:
+      - "3030:3030"
+    volumes:
+      - ./data1/config.ttl:/fuseki/config.ttl
+      - ./data1/example.owl:/fuseki/example.owl
+    command: ["/jena-fuseki/fuseki-server", "--config", "/fuseki/config.ttl"]
+
+  fuseki2:
+    image: stain/jena-fuseki
+    container_name: fuseki2
+    ports:
+      - "3031:3030"
+    volumes:
+      - ./data2/config.ttl:/fuseki/config.ttl
+      - ./data2/example.owl:/fuseki/example.owl
+    command: ["/jena-fuseki/fuseki-server", "--config", "/fuseki/config.ttl"]

@@ -1,0 +1,189 @@
+<?xml version="1.0"?>
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+    xmlns:ex="http://example.org/ontology#"
+    xml:base="http://example.org/ontology">
+
+  <!-- Ontology -->
+  <owl:Ontology rdf:about="http://example.org/ontology"/>
+
+  <!-- Classes -->
+  <owl:Class rdf:about="ex:Device"/>
+  <owl:Class rdf:about="ex:Sensor">
+    <rdfs:subClassOf rdf:resource="ex:Device"/>
+  </owl:Class>
+  <owl:Class rdf:about="ex:SensorType"/>
+  <owl:Class rdf:about="ex:Server">
+    <rdfs:subClassOf rdf:resource="ex:Device"/>
+  </owl:Class>
+  <owl:Class rdf:about="ex:Network"/>
+  <owl:Class rdf:about="ex:Location"/>
+  <owl:Class rdf:about="ex:Application"/>
+  <owl:Class rdf:about="ex:User"/>
+  <owl:Class rdf:about="ex:OperatingSystem"/>
+  <owl:Class rdf:about="ex:Alert"/>
+
+  <owl:Class rdf:about="ex:CriticalAlert">
+    <rdfs:subClassOf rdf:resource="ex:Alert"/>
+    <owl:equivalentClass>
+      <owl:Class>
+        <owl:intersectionOf rdf:parseType="Collection">
+          <rdf:Description rdf:about="ex:Alert"/>
+          <owl:Restriction>
+            <owl:onProperty rdf:resource="ex:hasSeverity"/>
+            <owl:hasValue rdf:datatype="xsd:string">critical</owl:hasValue>
+          </owl:Restriction>
+        </owl:intersectionOf>
+      </owl:Class>
+    </owl:equivalentClass>
+  </owl:Class>
+
+  <!-- Disjoint classes -->
+  <owl:Class rdf:about="ex:MobileDevice">
+    <rdfs:subClassOf rdf:resource="ex:Device"/>
+    <owl:disjointWith rdf:resource="ex:Server"/>
+  </owl:Class>
+
+  <!-- Object Properties -->
+  <owl:ObjectProperty rdf:about="ex:locatedIn">
+    <rdfs:domain rdf:resource="ex:Device"/>
+    <rdfs:range rdf:resource="ex:Location"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="ex:connectedTo">
+    <rdfs:domain rdf:resource="ex:Device"/>
+    <rdfs:range rdf:resource="ex:Device"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="ex:monitors">
+    <rdfs:domain rdf:resource="ex:Sensor"/>
+    <rdfs:range rdf:resource="ex:Server"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="ex:hasSensorType">
+    <rdfs:domain rdf:resource="ex:Sensor"/>
+    <rdfs:range rdf:resource="ex:SensorType"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="ex:runsApplication">
+    <rdfs:domain rdf:resource="ex:Server"/>
+    <rdfs:range rdf:resource="ex:Application"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="ex:usesOS">
+    <rdfs:domain rdf:resource="ex:Device"/>
+    <rdfs:range rdf:resource="ex:OperatingSystem"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="ex:triggersAlert">
+    <rdfs:domain rdf:resource="ex:Sensor"/>
+    <rdfs:range rdf:resource="ex:Alert"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="ex:assignedTo">
+    <rdfs:domain rdf:resource="ex:Alert"/>
+    <rdfs:range rdf:resource="ex:User"/>
+  </owl:ObjectProperty>
+
+  <!-- Data Properties -->
+  <owl:DatatypeProperty rdf:about="ex:hasIP">
+    <rdfs:domain rdf:resource="ex:Device"/>
+    <rdfs:range rdf:resource="xsd:string"/>
+  </owl:DatatypeProperty>
+
+  <owl:DatatypeProperty rdf:about="ex:hasHostname">
+    <rdfs:domain rdf:resource="ex:Device"/>
+    <rdfs:range rdf:resource="xsd:string"/>
+  </owl:DatatypeProperty>
+
+  <owl:DatatypeProperty rdf:about="ex:hasSeverity">
+    <rdfs:domain rdf:resource="ex:Alert"/>
+    <rdfs:range rdf:resource="xsd:string"/>
+  </owl:DatatypeProperty>
+
+  <!-- Individuals -->
+  <owl:NamedIndividual rdf:about="ex:SensorA">
+    <rdf:type rdf:resource="ex:Sensor"/>
+    <ex:locatedIn rdf:resource="ex:Room1"/>
+    <ex:monitors rdf:resource="ex:ServerX"/>
+    <ex:hasSensorType rdf:resource="ex:TemperatureSensor"/>
+  </owl:NamedIndividual>
+
+  <owl:NamedIndividual rdf:about="ex:SensorB">
+    <rdf:type rdf:resource="ex:Sensor"/>
+    <ex:locatedIn rdf:resource="ex:Room2"/>
+    <ex:monitors rdf:resource="ex:ServerY"/>
+    <ex:hasSensorType rdf:resource="ex:HumiditySensor"/>
+  </owl:NamedIndividual>
+
+  <owl:NamedIndividual rdf:about="ex:ServerX">
+    <rdf:type rdf:resource="ex:Server"/>
+    <ex:connectedTo rdf:resource="ex:ServerY"/>
+    <ex:runsApplication rdf:resource="ex:WebApp1"/>
+    <ex:usesOS rdf:resource="ex:Ubuntu"/>
+    <ex:hasIP rdf:datatype="xsd:string">192.168.1.10</ex:hasIP>
+    <ex:hasHostname rdf:datatype="xsd:string">server-x</ex:hasHostname>
+  </owl:NamedIndividual>
+
+  <owl:NamedIndividual rdf:about="ex:ServerY">
+    <rdf:type rdf:resource="ex:Server"/>
+    <ex:connectedTo rdf:resource="ex:ServerZ"/>
+    <ex:runsApplication rdf:resource="ex:DatabaseApp1"/>
+    <ex:usesOS rdf:resource="ex:Ubuntu"/>
+    <ex:hasIP rdf:datatype="xsd:string">192.168.1.11</ex:hasIP>
+    <ex:hasHostname rdf:datatype="xsd:string">server-y</ex:hasHostname>
+  </owl:NamedIndividual>
+
+  <owl:NamedIndividual rdf:about="ex:ServerZ">
+    <rdf:type rdf:resource="ex:Server"/>
+    <ex:usesOS rdf:resource="ex:WindowsServer"/>
+    <ex:hasIP rdf:datatype="xsd:string">192.168.1.12</ex:hasIP>
+    <ex:hasHostname rdf:datatype="xsd:string">server-z</ex:hasHostname>
+  </owl:NamedIndividual>
+
+  <owl:NamedIndividual rdf:about="ex:Room1">
+    <rdf:type rdf:resource="ex:Location"/>
+  </owl:NamedIndividual>
+
+  <owl:NamedIndividual rdf:about="ex:Room2">
+    <rdf:type rdf:resource="ex:Location"/>
+  </owl:NamedIndividual>
+
+  <owl:NamedIndividual rdf:about="ex:TemperatureSensor">
+    <rdf:type rdf:resource="ex:SensorType"/>
+  </owl:NamedIndividual>
+
+  <owl:NamedIndividual rdf:about="ex:HumiditySensor">
+    <rdf:type rdf:resource="ex:SensorType"/>
+  </owl:NamedIndividual>
+
+  <owl:NamedIndividual rdf:about="ex:WebApp1">
+    <rdf:type rdf:resource="ex:Application"/>
+  </owl:NamedIndividual>
+
+  <owl:NamedIndividual rdf:about="ex:DatabaseApp1">
+    <rdf:type rdf:resource="ex:Application"/>
+  </owl:NamedIndividual>
+
+  <owl:NamedIndividual rdf:about="ex:Ubuntu">
+    <rdf:type rdf:resource="ex:OperatingSystem"/>
+  </owl:NamedIndividual>
+
+  <owl:NamedIndividual rdf:about="ex:WindowsServer">
+    <rdf:type rdf:resource="ex:OperatingSystem"/>
+  </owl:NamedIndividual>
+
+  <owl:NamedIndividual rdf:about="ex:Alert101">
+    <rdf:type rdf:resource="ex:CriticalAlert"/>
+    <ex:hasSeverity rdf:datatype="xsd:string">critical</ex:hasSeverity>
+    <ex:assignedTo rdf:resource="ex:User123"/>
+  </owl:NamedIndividual>
+
+  <owl:NamedIndividual rdf:about="ex:User123">
+    <rdf:type rdf:resource="ex:User"/>
+  </owl:NamedIndividual>
+
+</rdf:RDF>
