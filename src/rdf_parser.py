@@ -49,41 +49,28 @@ def extract_nodes_and_edges(graph):
     data = {d: get_query_objects(graph, d) for d in data_type_query}
 
     
+    color_list = [
+        "Blue", "Pink", "Cyan", "Yellow", "Magenta", "Orange", "Purple",
+        "Aqua", "Lime", "Teal", "Navy", "Olive", "Black", "Brown", "Coral",
+        "Gold", "Silver", "Maroon", "Turquoise", "Violet"
+    ]
+    class_color_map = {}
     color_dict = {}
+
+    # Assign a unique color to each class key
+    for idx, key in enumerate(classes.keys()):
+        color = color_list[idx % len(color_list)]
+        class_color_map[key] = color
+
     for node in nodes:
         if node in classes:
-            color_dict.setdefault("Blue", []).append(node)
+            color = class_color_map.get(node, "Brown")
+            color_dict.setdefault(color, []).append(node)
         elif any(node in sublist for sublist in classes.values()):
             for key, value in classes.items():
                 if node in value:
-                    match(key):
-                        case 'ex:Device':
-                            color_dict.setdefault("Pink", []).append(node)
-                        case 'ex:Sensor':
-                            color_dict.setdefault("Cyan", []).append(node)
-                        case 'ex:SensorType':
-                            color_dict.setdefault("Yellow", []).append(node)
-                        case 'ex:Server':
-                            color_dict.setdefault("Magenta", []).append(node)
-                        case 'ex:Network':
-                            color_dict.setdefault("Orange", []).append(node)
-                        case 'ex:Location':
-                            color_dict.setdefault("Purple", []).append(node)
-                        case 'ex:Application':
-                            color_dict.setdefault("Aqua", []).append(node)
-                        case 'ex:User':
-                            color_dict.setdefault("Lime", []).append(node)
-                        case 'ex:OperatingSystem':
-                            color_dict.setdefault("Teal", []).append(node)
-                        case 'ex:Alert':
-                            color_dict.setdefault("Navy", []).append(node)
-                        case 'ex:CriticalAlert':
-                            color_dict.setdefault("Olive", []).append(node)
-                        case 'ex:MobileDevice':
-                            color_dict.setdefault("Black", []).append(node)
-                        case _:
-                            color_dict.setdefault("Brown", []).append(node)
-                            
+                    color = class_color_map.get(key, "Brown")
+                    color_dict.setdefault(color, []).append(node)
         elif node in data or any(node in sublist for sublist in data.values()):
             color_dict.setdefault("Green", []).append(node)
         elif node in object_type_query:
