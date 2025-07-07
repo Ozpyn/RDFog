@@ -3,8 +3,9 @@ import numpy as np
 
 def compute_layout(nodes, edges, method="spring"):
     G = nx.Graph()
-    for node in nodes:
-        G.add_node(node)
+    for _, vals in nodes.items():
+        for node in vals:
+            G.add_node(node)
     for src, dst, _ in edges:
         G.add_edge(src, dst)
 
@@ -14,5 +15,5 @@ def compute_layout(nodes, edges, method="spring"):
         layout_2d = nx.random_layout(G, dim=3)
 
     # Convert to dict of (x, y, z)
-    coords = {node: layout_2d[node] for node in nodes}
+    coords = {node: layout_2d[node] for _, vals in nodes.items() for node in vals}
     return coords
