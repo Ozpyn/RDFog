@@ -9,6 +9,8 @@ services:
       - ./data1/config.ttl:/fuseki/config.ttl
       - ./data1/example.owl:/fuseki/example.owl
     command: ["/jena-fuseki/fuseki-server", "--config", "/fuseki/config.ttl"]
+    environment:
+      - ADMIN_PASSWORD=admin
 
   fuseki2:
     image: stain/jena-fuseki
@@ -19,3 +21,5 @@ services:
       - ./data2/config.ttl:/fuseki/config.ttl
       - ./data2/example.owl:/fuseki/example.owl
     command: ["/jena-fuseki/fuseki-server", "--config", "/fuseki/config.ttl"]
+    environment:
+      - ADMIN_PASSWORD=admin
