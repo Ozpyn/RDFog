@@ -7,6 +7,8 @@ A point cloud visualizer for RDF data with distributed storage.
    ```bash
    git clone https://github.com/yourusername/RDFog.git
    cd RDFog
+   python -m venv .venv
+   source .venv/bin/activate
    pip install -r requirements.txt
    ```
 
