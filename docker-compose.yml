@@ -7,8 +7,9 @@ services:
       - "3030:3030"
     volumes:
       - ./data1/config.ttl:/fuseki/config.ttl
-      - ./data1/example.owl:/fuseki/example.owl
-    command: ["/jena-fuseki/fuseki-server", "--config", "/fuseki/config.ttl"]
+      - ./data1:/staging  # Mount data1 directory as /staging
+      - ./entrypoint.sh:/entrypoint.sh
+    command: ["/entrypoint.sh"]
     environment:
       - ADMIN_PASSWORD=admin
 
@@ -19,7 +20,8 @@ services:
       - "3031:3030"
     volumes:
       - ./data2/config.ttl:/fuseki/config.ttl
-      - ./data2/example.owl:/fuseki/example.owl
-    command: ["/jena-fuseki/fuseki-server", "--config", "/fuseki/config.ttl"]
+      - ./data2:/staging  # Mount data2 directory as /staging
+      - ./entrypoint.sh:/entrypoint.sh
+    command: ["/entrypoint.sh"]
     environment:
       - ADMIN_PASSWORD=admin
