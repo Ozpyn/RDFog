@@ -49,14 +49,25 @@ def timed_visualize_graph(nodes, edges, coords):
 
 # Main pipeline
 if __name__ == "__main__":
-    # Option 1: Use federated data
-    triples = get_federated_triples()
-    graph = triples_to_graph(triples)
+    try:
+        # Option 1: Use federated data
+        print("Fetching federated triples...")
+        triples = get_federated_triples()
+        print(f"Retrieved {len(triples)} triples")
+        
+        if not triples:
+            print("No triples found. Falling back to local file...")
+            rdf_path = "data/example.owl"
+            graph = timed_parse_rdf(rdf_path)
+        else:
+            graph = triples_to_graph(triples)
 
-    # Option 2: Use local file (keep for fallback/testing)
-    # rdf_path = "data/example.owl"
-    # graph = timed_parse_rdf(rdf_path)
-
-    nodes, edges = timed_extract_nodes_and_edges(graph)
-    coords = timed_compute_layout(nodes, edges)
-    timed_visualize_graph(nodes, edges, coords)
+        nodes, edges = timed_extract_nodes_and_edges(graph)
+        print(f"Extracted {len(nodes)} node groups and {len(edges)} edges")
+        
+        coords = timed_compute_layout(nodes, edges)
+        timed_visualize_graph(nodes, edges, coords)
+        
+    except Exception as e:
+        print(f"Error: {e}")
+        print("Make sure Docker containers are running: sudo docker-compose up -d")
