@@ -1,89 +1,91 @@
 import rdflib
-
-def get_classes(graph):
-    query = """
-    PREFIX owl: <http://www.w3.org/2002/07/owl#>
-    SELECT ?class WHERE {?class a owl:Class .}
-    """
-    results = graph.query(query)
-    return [str(row['class']) for row in results]
-
-def get_objects(graph):
-    query = """
-    PREFIX owl: <http://www.w3.org/2002/07/owl#>
-    SELECT ?object WHERE {?object a owl:ObjectProperty .}
-    """
-    results = graph.query(query)
-    return [str(row['object']) for row in results]
-
-def get_data(graph):
-    query = """
-    PREFIX owl: <http://www.w3.org/2002/07/owl#>
-    SELECT ?data WHERE {?data a owl:DatatypeProperty .}
-    """
-    results = graph.query(query)
-    return [str(row['data']) for row in results]
-
-def get_instances(graph, class_type):
-    query = "SELECT ?instance WHERE {?instance a <" + class_type + "> .}"
-    results = graph.query(query)
-    return [str(row['instance']) for row in results]
-
-def get_query_objects(graph, type):
-    query = "SELECT ?subject ?object WHERE {?subject <" + type + "> ?object .}"
-    results = graph.query(query)
-    return [str(row['object']) for row in results]
+import random
 
 def parse_rdf(filepath):
     g = rdflib.Graph()
     g.parse(filepath)    
     return g
 
-def extract_nodes_and_edges(graph):
-    nodes = set()
+def generate_random_hex_color():
+    """Generate a random hex color"""
+    return "#{:06x}".format(random.randint(0, 0xFFFFFF))
+
+def get_individuals_with_types(graph):
+    """Get all individuals with their types"""
+    query = """
+    PREFIX owl: <http://www.w3.org/2002/07/owl#>
+    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+    
+    SELECT ?individual ?type WHERE {
+        ?individual a owl:NamedIndividual .
+        ?individual rdf:type ?type .
+        FILTER(?type != owl:NamedIndividual)
+    }
+    """
+    results = graph.query(query)
+    
+    individuals = {}
+    for row in results:
+        individual = str(row['individual'])
+        individual_type = str(row['type'])
+        individuals[individual] = individual_type
+    
+    return individuals
+
+def get_relationships_between_individuals(graph):
+    """Get relationships between individuals"""
+    query = """
+    PREFIX owl: <http://www.w3.org/2002/07/owl#>
+    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+    
+    SELECT ?subject ?predicate ?object WHERE {
+        ?subject a owl:NamedIndividual .
+        ?object a owl:NamedIndividual .
+        ?subject ?predicate ?object .
+        FILTER(?predicate != rdf:type)
+    }
+    """
+    results = graph.query(query)
+    
     edges = []
-    for subj, pred, obj in graph:
-        nodes.update([str(subj), str(obj)])
-        edges.append((str(subj), str(obj), str(pred)))
+    for row in results:
+        subject = str(row['subject'])
+        predicate = str(row['predicate'])
+        obj = str(row['object'])
+        edges.append((subject, obj, predicate))
+    
+    return edges
 
-    # SPARQL queries
-    class_query = get_classes(graph)
-    object_type_query = get_objects(graph)
-    data_type_query = get_data(graph)
-
-    classes = {c: get_instances(graph, c) for c in class_query}
-    data = {d: get_query_objects(graph, d) for d in data_type_query}
-
-    color_list = [
-        "blue", "pink", "cyan", "yellow", "magenta", "orange", "purple",
-        "aqua", "lime", "teal", "navy", "olive", "black", "brown", "coral",
-        "gold", "silver", "maroon", "turquoise", "violet"
-    ]
-    class_color_map = {}
+def extract_nodes_and_edges(graph):
+    """Extract individuals as nodes, colored by type"""
+    
+    # Get all individuals with their types
+    individuals = get_individuals_with_types(graph)
+    
+    # Get relationships between individuals
+    edges = get_relationships_between_individuals(graph)
+    
+    # Create color mapping for each unique type
+    unique_types = set(individuals.values())
+    type_color_map = {}
+    
+    for individual_type in unique_types:
+        type_color_map[individual_type] = generate_random_hex_color()
+    
+    # Group nodes by their color (type)
     color_dict = {}
-
-    # Assign a unique color to each class key
-    for idx, key in enumerate(classes.keys()):
-        color = color_list[idx % len(color_list)]
-        class_color_map[key] = color
-
-    for node in nodes:
-        if node in classes:
-            color = class_color_map.get(node, "brown")
-            color_dict.setdefault(color, []).append(node)
-        elif any(node in sublist for sublist in classes.values()):
-            for key, value in classes.items():
-                if node in value:
-                    color = class_color_map.get(key, "brown")
-                    color_dict.setdefault(color, []).append(node)
-        elif node in data or any(node in sublist for sublist in data.values()):
-            color_dict.setdefault("green", []).append(node)
-        elif node in object_type_query:
-            color_dict.setdefault("red", []).append(node)
-        else:
-            if "xsd:" in node:
-                color_dict.setdefault("lightgrey", []).append(node)
-            else:
-                color_dict.setdefault("grey", []).append(node)
- 
+    
+    for individual, individual_type in individuals.items():
+        color = type_color_map[individual_type]
+        color_dict.setdefault(color, []).append(individual)
+    
+    # Print debug information
+    print("Individual Type Color Mapping:")
+    for individual_type, color in type_color_map.items():
+        count = sum(1 for itype in individuals.values() if itype == individual_type)
+        print(f"  {individual_type}: {color} ({count} individuals)")
+    
+    print(f"\nTotal individuals: {len(individuals)}")
+    print(f"Total relationships: {len(edges)}")
+    
     return color_dict, edges

@@ -2,12 +2,17 @@ from SPARQLWrapper import SPARQLWrapper, JSON
 from rdflib import Graph, URIRef, Literal
 
 def get_triples_from_endpoint(endpoint_url):
-    print(f"Querying endpoint: {endpoint_url}")
+    """Query an endpoint for all triples"""
+    query = """
+    SELECT ?s ?p ?o
+    WHERE {
+        ?s ?p ?o .
+    }
+    """
+    
     try:
         sparql = SPARQLWrapper(endpoint_url)
-        sparql.setQuery("""
-            SELECT ?s ?p ?o WHERE { ?s ?p ?o }
-        """)
+        sparql.setQuery(query)
         sparql.setReturnFormat(JSON)
         
         results = sparql.query().convert()
@@ -15,18 +20,21 @@ def get_triples_from_endpoint(endpoint_url):
         triples = []
         if "results" in results and "bindings" in results["results"]:
             for result in results["results"]["bindings"]:
-                s = result["s"]["value"]
-                p = result["p"]["value"]
-                o = result["o"]["value"]
-                triples.append((s, p, o))
-        
-        print(f"Extracted {len(triples)} triples from {endpoint_url}")
+                # Check if all required keys exist
+                if "s" in result and "p" in result and "o" in result:
+                    s = result["s"]["value"]
+                    p = result["p"]["value"]
+                    o = result["o"]["value"]
+                    triples.append((s, p, o))
+                else:
+                    print(f"Warning: Incomplete result - missing keys: {result.keys()}")
+        else:
+            print(f"Warning: No results found in endpoint {endpoint_url}")
+            
         return triples
         
     except Exception as e:
         print(f"Error querying {endpoint_url}: {e}")
-        import traceback
-        traceback.print_exc()
         return []
 
 def get_federated_triples():
