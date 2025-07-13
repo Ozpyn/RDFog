@@ -1,2 +1,4 @@
 /src/__pycache__
+.venv/
 venv/
+test_*.py

@@ -1,0 +1,17 @@
+@prefix fuseki: <http://jena.apache.org/fuseki#> .
+@prefix tdb:    <http://jena.hpl.hp.com/2008/tdb#> .
+
+[] a fuseki:Server ;
+   fuseki:services (
+     <#service>
+   ) .
+
+<#service> a fuseki:Service ;
+    fuseki:name "ds" ;
+    fuseki:serviceQuery "sparql" ;
+    fuseki:serviceReadGraphStore "get" ;
+    fuseki:serviceReadWriteGraphStore "data" ;
+    fuseki:dataset <#dataset> .
+
+<#dataset> a tdb:DatasetTDB ;
+    tdb:location "/fuseki/databases/ds" .
