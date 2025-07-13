@@ -29,7 +29,7 @@ def get_individuals_with_types(graph):
         individual = str(row['individual'])
         individual_type = str(row['type'])
         individuals[individual] = individual_type
-    
+        
     return individuals
 
 def get_relationships_between_individuals(graph):
@@ -77,7 +77,7 @@ def extract_nodes_and_edges(graph):
     
     for individual, individual_type in individuals.items():
         color = type_color_map[individual_type]
-        color_dict.setdefault(color, []).append(individual)
+        color_dict.setdefault((color, individual_type), []).append(individual)
     
     # Print debug information
     print("Individual Type Color Mapping:")
