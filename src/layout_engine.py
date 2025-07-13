@@ -28,8 +28,8 @@ def compute_layout(nodes, edges, method="spring"):
         pos.update(layout_3d_1)
         pos.update(layout_3d_2)
     else:
-        layout_3d_1 = nx.random_layout(G1, dim=3, center=(-1, 0, 0))
-        layout_3d_2 = nx.random_layout(G2, dim=3, center=(1, 0, 0))
+        layout_3d_1 = nx.random_layout(G1, dim=3, center=(-3, 0, 0))
+        layout_3d_2 = nx.random_layout(G2, dim=3, center=(3, 0, 0))
         pos.update(layout_3d_1)
         pos.update(layout_3d_2)
 
